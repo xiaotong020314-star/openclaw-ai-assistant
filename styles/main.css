@@ -1,0 +1,184 @@
+/* ====== 简约风格 - OpenClaw ====== */
+html, body { -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "PingFang SC","Hiragino Sans GB", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* 隐藏滚动条但保留滚动 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ===== app shell 简化背景 ===== */
+#app-shell { box-sizing: border-box; }
+
+/* ===== 底部 Tab 激活态 ===== */
+.tab-btn { color: #94a3b8; transition: color .2s ease; }
+.tab-btn.active { color: #2f9bf7; }
+.dark .tab-btn { color: #64748b; }
+.dark .tab-btn.active { color: #59b9ff; }
+.tab-btn.active span { font-weight: 600; }
+
+/* ===== AI 头像呼吸（更克制） ===== */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(47,155,247,.25); }
+  70%  { box-shadow: 0 0 0 10px rgba(47,155,247,0); }
+  100% { box-shadow: 0 0 0 0 rgba(47,155,247,0); }
+}
+.ai-avatar-pulse { animation: pulseRing 2.8s infinite; }
+
+/* ===== 语音波纹 ===== */
+.voice-wave span {
+  display: inline-block;
+  width: 3px;
+  background: #2f9bf7;
+  border-radius: 2px;
+  animation: wave 1s ease-in-out infinite;
+}
+.voice-wave span:nth-child(1) { animation-delay: -0.9s; }
+.voice-wave span:nth-child(2) { animation-delay: -0.8s; }
+.voice-wave span:nth-child(3) { animation-delay: -0.7s; }
+.voice-wave span:nth-child(4) { animation-delay: -0.6s; }
+.voice-wave span:nth-child(5) { animation-delay: -0.5s; }
+.voice-wave span:nth-child(6) { animation-delay: -0.4s; }
+.voice-wave span:nth-child(7) { animation-delay: -0.3s; }
+.voice-wave span:nth-child(8) { animation-delay: -0.2s; }
+.voice-wave span:nth-child(9) { animation-delay: -0.1s; }
+.voice-wave span:nth-child(10){ animation-delay:  0s;   }
+@keyframes wave {
+  0%, 100% { height: 6px; }
+  50%      { height: 28px; }
+}
+
+/* ===== AI 推送气泡（简约白底） ===== */
+.ai-toast {
+  pointer-events: auto;
+  max-width: 360px;
+  animation: toastIn .35s cubic-bezier(.2,.9,.3,1) both;
+}
+@keyframes toastIn {
+  0%   { transform: translateY(-12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.ai-toast.toast-out { animation: toastOut .3s ease forwards; }
+@keyframes toastOut {
+  to { transform: translateY(-8px); opacity: 0; }
+}
+
+/* ===== 卡片入场（更轻） ===== */
+.card-in {
+  opacity: 0; transform: translateY(6px);
+  animation: cardIn .4s ease-out forwards;
+}
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== AI 思考点点 ===== */
+.dot-flashing {
+  display: inline-flex; gap: 3px; align-items: center;
+}
+.dot-flashing span {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: currentColor; opacity: .35;
+  animation: dotFlash 1.2s infinite;
+}
+.dot-flashing span:nth-child(2) { animation-delay: .15s; }
+.dot-flashing span:nth-child(3) { animation-delay: .3s; }
+@keyframes dotFlash {
+  0%, 80%, 100% { opacity: .25; transform: translateY(0); }
+  40%           { opacity: 1;   transform: translateY(-2px); }
+}
+
+/* ===== 时间轴（细线） ===== */
+.timeline-dot { position: relative; }
+.timeline-dot::before {
+  content: ""; position: absolute;
+  left: 11px; top: 26px; bottom: -16px;
+  width: 1px; background: #e2e8f0;
+}
+.dark .timeline-dot::before { background: #334155; }
+.timeline-dot:last-child::before { display: none; }
+
+/* ===== switch（简约） ===== */
+.switch {
+  width: 36px; height: 20px; border-radius: 999px;
+  background: #e2e8f0; position: relative; transition: .2s; cursor: pointer; flex-shrink: 0;
+}
+.dark .switch { background: #475569; }
+.switch::after{
+  content:""; position:absolute; left:2px; top:2px;
+  width:16px; height:16px; border-radius: 50%;
+  background:#fff; transition: .2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.switch.on { background: #2f9bf7; }
+.switch.on::after { left: 18px; }
+
+/* ===== 进度条（简约） ===== */
+.progress-bar {
+  height: 4px; border-radius: 999px;
+  background: #e2e8f0; overflow: hidden;
+}
+.dark .progress-bar { background: #334155; }
+.progress-bar > div {
+  height: 100%;
+  background: #2f9bf7;
+  border-radius: 999px;
+  transition: width .8s ease;
+}
+
+/* ===== 工具卡片 ===== */
+.tool-card { transition: transform .2s ease; }
+.tool-card:active { transform: scale(.97); }
+
+/* ===== AI 圆头像图案（简约橙） ===== */
+.claw-avatar {
+  background: #ff9f43;
+  color: #fff;
+}
+
+/* ===== 简约卡片基础类 ===== */
+.s-card {
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+}
+.dark .s-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+/* ===== 输入框聚焦边框 ===== */
+.input-hero {
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.input-hero:focus-within {
+  border-color: #2f9bf7;
+  box-shadow: 0 0 0 4px rgba(47,155,247,.08);
+}
+
+/* ===== 首屏 hero 高度 ===== */
+.hero-screen {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 滚动提示 bounce ===== */
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); opacity: .5; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
+.scroll-hint { animation: scrollHint 1.8s ease-in-out infinite; }
+
+/* ===== 底部 nav 简化（去毛玻璃过强效果） ===== */
+.nav-shell {
+  background: rgba(255,255,255,.95);
+  border-top: 1px solid #f1f5f9;
+}
+.dark .nav-shell {
+  background: rgba(15,23,42,.95);
+  border-top: 1px solid #334155;
+}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>OpenClaw · AI 全天候智能管家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#eef9ff',
+              100: '#d9f0ff',
+              200: '#bce4ff',
+              300: '#8ed3ff',
+              400: '#59b9ff',
+              500: '#2f9bf7',
+              600: '#1a7ee0',
+              700: '#1864b4',
+              800: '#1a548f',
+              900: '#1b4774',
+            },
+            cyan2: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+            },
+            warm: {
+              50:  '#fff8f1',
+              100: '#ffecd6',
+              200: '#ffd6a8',
+              300: '#ffb86b',
+            }
+          },
+          boxShadow: {
+            soft: '0 8px 30px rgba(31, 99, 184, 0.10)',
+            ring: '0 0 0 6px rgba(47,155,247,0.15)',
+          },
+          fontFamily: {
+            sans: ['"PingFang SC"', '"Hiragino Sans GB"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+  <!-- 移动端外壳 -->
+  <div id="app-shell" class="mx-auto w-full max-w-[440px] min-h-screen relative bg-white dark:bg-slate-900 overflow-hidden">
+
+    <!-- 状态栏 -->
+    <div class="flex items-center justify-between px-5 pt-3 text-xs font-medium text-slate-700 dark:text-slate-200">
+      <span id="status-time">9:41</span>
+      <div class="flex items-center gap-1">
+        <i class="ri-signal-tower-fill"></i>
+        <i class="ri-wifi-fill"></i>
+        <i class="ri-battery-fill text-green-500"></i>
+      </div>
+    </div>
+
+    <!-- 主内容容器 -->
+    <main id="page-container" class="pb-24 px-5 pt-2 min-h-[calc(100vh-80px)]"></main>
+
+    <!-- AI 主动推送气泡浮层 -->
+    <div id="ai-toast-stack" class="pointer-events-none fixed inset-x-0 top-12 z-40 flex flex-col items-center"></div>
+
+    <!-- 语音交互浮层 -->
+    <div id="voice-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm items-center justify-center">
+      <div class="w-72 rounded-2xl bg-white dark:bg-slate-800 p-6 text-center shadow-xl">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+          <i class="ri-mic-fill text-2xl"></i>
+        </div>
+        <div class="voice-wave mb-3 flex h-10 items-end justify-center gap-1">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400">正在聆听… 你可以说</p>
+        <p class="mt-1 text-base font-medium text-slate-800 dark:text-white">"帮我安排今晚吃饭"</p>
+        <button id="voice-close" class="mt-5 w-full rounded-full border border-slate-200 dark:border-slate-700 dark:text-white py-2 text-sm">取消</button>
+      </div>
+    </div>
+
+    <!-- 电话呼叫浮层 -->
+    <div id="call-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm items-center justify-center">
+      <div class="w-72 rounded-2xl bg-white dark:bg-slate-800 p-6 text-center shadow-xl">
+        <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500 text-white ai-avatar-pulse">
+          <i class="ri-phone-fill text-3xl"></i>
+        </div>
+        <p id="call-status" class="text-xs text-slate-400 dark:text-slate-500">正在呼叫…</p>
+        <p class="mt-1 text-lg font-semibold text-slate-800 dark:text-white">Claw 智能助理</p>
+        <p id="call-timer" class="mt-1 text-xs text-slate-500 dark:text-slate-400">00:00</p>
+        <p class="mt-3 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 px-2">
+          通话中可直接说出需求，Claw 会实时帮你点餐、订车、安排日程。
+        </p>
+        <div class="mt-5 grid grid-cols-3 gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+          <button class="flex flex-col items-center gap-1 rounded-xl py-2 active:bg-slate-100 dark:active:bg-slate-700">
+            <i class="ri-mic-line text-base"></i>静音
+          </button>
+          <button class="flex flex-col items-center gap-1 rounded-xl py-2 active:bg-slate-100 dark:active:bg-slate-700">
+            <i class="ri-volume-up-line text-base"></i>免提
+          </button>
+          <button class="flex flex-col items-center gap-1 rounded-xl py-2 active:bg-slate-100 dark:active:bg-slate-700">
+            <i class="ri-record-circle-line text-base"></i>录音
+          </button>
+        </div>
+        <button id="call-close" class="mt-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-500 text-white active:scale-95">
+          <i class="ri-phone-fill text-xl rotate-[135deg]"></i>
+        </button>
+        <p class="mt-3 text-[10px] text-slate-400">挂断</p>
+      </div>
+    </div>
+
+    <!-- 底部 Tab 导航 -->
+    <nav id="bottom-nav" class="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[440px]">
+      <div class="nav-shell flex items-center justify-between px-2 py-2">
+        <button data-tab="home"  class="tab-btn flex flex-1 flex-col items-center gap-0.5 py-1.5">
+          <i class="ri-robot-2-line text-[20px]"></i><span class="text-[11px]">私人管家</span>
+        </button>
+        <button data-tab="shop"  class="tab-btn flex flex-1 flex-col items-center gap-0.5 py-1.5">
+          <i class="ri-shopping-bag-3-line text-[20px]"></i><span class="text-[11px]">商品</span>
+        </button>
+        <button data-tab="tools" class="tab-btn flex flex-1 flex-col items-center gap-0.5 py-1.5">
+          <i class="ri-tools-line text-[20px]"></i><span class="text-[11px]">工具</span>
+        </button>
+        <button data-tab="me"    class="tab-btn flex flex-1 flex-col items-center gap-0.5 py-1.5">
+          <i class="ri-user-3-line text-[20px]"></i><span class="text-[11px]">我的</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- 入口脚本 -->
+  <script type="module" src="./scripts/main.js"></script>
+
+  <!-- 签名 -->
+  <footer class="py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+    <p>由 <a href="https://with.woa.com/" style="color: #8A2BE2;" target="_blank">With</a> 通过自然语言生成</p>
+  </footer>
+</body>
+</html>
